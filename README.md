@@ -2,32 +2,32 @@
 Repositório para o exercício final do curso Python Fundamentals
 
 ## Descrição da solução
-## Problema do Caixa Eletrônico
+### Problema do Caixa Eletrônico
 
 #### Administração
-##### cadastro de usuarios
-##### reset de senhas
-##### desbloqueio <- errou 3 vezes, block
+cadastro de usuarios
+reset de senhas
+desbloqueio <- errou 3 vezes, block
 #--------------------------#
 #### Usuário
-##### redefinir senha
-##### consulta de saldo
-##### saque
-##### deposito
-##### transferencia entre contas 
+redefinir senha
+consulta de saldo
+saque
+deposito
+transferencia entre contas 
 
 #### login
-##### menu administração
-##### menu usuário comum 
+menu administração
+menu usuário comum 
 
-##### requisito de usar o banco de dados
+###### requisito de usar o banco de dados
 
 
 #################################
 
 ## Milestones 
 
-#### Menu 
+### Menu 
 
  -> funções 
 
