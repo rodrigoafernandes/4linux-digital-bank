@@ -48,3 +48,6 @@ menu usuário comum <br/>
             - depósito<br/>
 
 como enquadrar como um problema de orientação à objetos <br/>
+
+## Conexão com o Banco de Dados MariaDB
+<code>docker container run -d --name mariadb-4LDB --restart always -p 3306:3306 -e MYSQL_ROOT_PASSWORD=admin123 -e MYSQL_DATABASE=4LDBKDEV01 -e MYSQL_USER=USR_4LDBK -e MYSQL_PASSWORD=USR_4LDBK mariadb</code>
