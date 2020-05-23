@@ -11,12 +11,20 @@ class MysqlDB:
                                       database=config.getDatabase())
         self.__cursor = self.__db.cursor()
 
-    def executeSelect(self, query, params):
+    def executeSelectParams(self, query, params):
         return self.__cursor.execute(query, params)
 
-    def executeUpdate(self, query, params):
+    def executeSelect(self, query):
+        return self.__cursor.execute(query)
+
+    def executeUpdateDelete(self, query, params):
         self.__cursor.execute(query, params)
         self.__db.commit()
+
+    def executeInsert(self, query, params):
+        self.__cursor.execute(query, params)
+        self.__db.commit()
+        return self.__cursor.lastrowid
 
     def executeDDL(self, query):
         self.__cursor.execute(query)
