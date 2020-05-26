@@ -1,14 +1,12 @@
 from mysql import connector
-from modulos.configuration.mysql import MySQLConfig
-
-config = MySQLConfig()
 
 
 class MysqlDB:
 
-    def __init__(self):
-        self.__db = connector.connect(host=config.getHost(), user=config.getUsername(), passwd=config.getPassword(),
-                                      database=config.getDatabase())
+    def __init__(self, config):
+        self.__config = config
+        self.__db = connector.connect(host=self.__config.getHost(), user=self.__config.getUsername(),
+                                      passwd=self.__config.getPassword(), database=self.__config.getDatabase())
         self.__cursor = self.__db.cursor()
 
     def executeSelectParams(self, query, params):

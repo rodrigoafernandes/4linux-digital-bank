@@ -1,28 +1,26 @@
 from .usuarioqueries import query_find_by_id, query_find_by_login, query_find_all, query_insert, query_update, \
     query_delete
 from data.usuariosqlfile import getSqlCommandsUsuario
-from modulos.dbMysql.mysqldb import MysqlDB
 from modulos.usuario.exceptions.usuarionotfoundexception import UsuarioNotFound
 from modulos.usuario.exceptions.UsuarioJaCadastradoException import UsuarioJaCadastrado
-
-mysqlDB = MysqlDB()
 
 
 class UsuarioRepository:
 
-    def __init__(self):
+    def __init__(self, mysqlDB):
+        self.__mysqlDB = mysqlDB
         self.__exists = False
         self.__validaTabelaUsuario()
 
     def findById(self, iDUsuario):
-        result = mysqlDB.executeSelectParams(query_find_by_id, (iDUsuario,))
+        result = self.__mysqlDB.executeSelectParams(query_find_by_id, (iDUsuario,))
         if len(result) < 1:
             raise UsuarioNotFound(f'Não existe usuário com o id: {iDUsuario}')
 
         return self.__convertToUsuarioDic(result[0])
 
     def findByLogin(self, login):
-        result = mysqlDB.executeSelectParams(query_find_by_login, (login,))
+        result = self.__mysqlDB.executeSelectParams(query_find_by_login, (login,))
 
         if len(result) < 1:
             raise UsuarioNotFound(f'Não há usuários cadastrados com o login: {login}')
@@ -31,7 +29,7 @@ class UsuarioRepository:
 
     def findAll(self):
         usuarios = []
-        result = mysqlDB.executeSelectParams(query_find_all)
+        result = self.__mysqlDB.executeSelectParams(query_find_all)
 
         if len(result) < 1:
             raise UsuarioNotFound('Não há usuários cadastrados,')
@@ -45,7 +43,7 @@ class UsuarioRepository:
         try:
             self.findByLogin(usuario['login'])
         except UsuarioNotFound:
-            iduser = mysqlDB.executeInsert(query_insert, (usuario['nome'], usuario['login'], usuario['password'],
+            iduser = self.__mysqlDB.executeInsert(query_insert, (usuario['nome'], usuario['login'], usuario['password'],
                                                           usuario['admin']))
             usuario['id'] = iduser
 
@@ -55,16 +53,16 @@ class UsuarioRepository:
 
     def update(self, usuario):
         self.findById(usuario['id'])
-        mysqlDB.executeUpdateDelete(query_update,
-                                    (usuario['nome'], usuario['password'], usuario['admin'], usuario['id']))
+        self.__mysqlDB.executeUpdateDelete(query_update,
+                                           (usuario['nome'], usuario['password'], usuario['admin'], usuario['id']))
 
     def delete(self, usuario):
         self.findById(usuario['id'])
-        mysqlDB.executeUpdateDelete(query_delete, (usuario['id']))
+        self.__mysqlDB.executeUpdateDelete(query_delete, (usuario['id']))
 
     def __validaTabelaUsuario(self):
         if not self.__exists:
-            tables = mysqlDB.executeSelectParams('SHOW TABLES')
+            tables = self.__mysqlDB.executeSelectParams('SHOW TABLES')
 
             for table in tables:
                 if 'Usuario' == table[0]:
@@ -74,7 +72,7 @@ class UsuarioRepository:
                 commands = getSqlCommandsUsuario()
 
                 for command in commands:
-                    mysqlDB.executeDDL(command)
+                    self.__mysqlDB.executeDDL(command)
 
     def __convertToUsuarioDic(self, usuarioBD):
         return {'id': usuarioBD[0], 'nome': usuarioBD[1], 'login': usuarioBD[2], 'password': usuarioBD[3],
