@@ -29,7 +29,7 @@ class UsuarioRepository:
 
     def findAll(self):
         usuarios = []
-        result = self.__mysqlDB.executeSelectParams(query_find_all)
+        result = self.__mysqlDB.executeSelect(query_find_all)
 
         if len(result) < 1:
             raise UsuarioNotFound('Não há usuários cadastrados,')
@@ -62,7 +62,7 @@ class UsuarioRepository:
 
     def __validaTabelaUsuario(self):
         if not self.__exists:
-            tables = self.__mysqlDB.executeSelectParams('SHOW TABLES')
+            tables = self.__mysqlDB.executeSelect('SHOW TABLES')
 
             for table in tables:
                 if 'Usuario' == table[0]:
@@ -73,6 +73,8 @@ class UsuarioRepository:
 
                 for command in commands:
                     self.__mysqlDB.executeDDL(command)
+
+                self.__exists = True
 
     def __convertToUsuarioDic(self, usuarioBD):
         return {'id': usuarioBD[0], 'nome': usuarioBD[1], 'login': usuarioBD[2], 'password': usuarioBD[3],
