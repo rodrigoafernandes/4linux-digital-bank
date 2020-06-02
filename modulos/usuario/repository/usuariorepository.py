@@ -7,27 +7,27 @@ from modulos.usuario.exceptions.UsuarioJaCadastradoException import UsuarioJaCad
 
 class UsuarioRepository:
 
-    def __init__(self, mysqlDB):
-        self.__mysqlDB = mysqlDB
+    def __init__(self, mysql_db):
+        self.__mysqlDB = mysql_db
         self.__exists = False
-        self.__validaTabelaUsuario()
+        self.__valida_tabela_usuario()
 
-    def findById(self, iDUsuario):
-        result = self.__mysqlDB.executeSelectParams(query_find_by_id, (iDUsuario,))
+    def find_by_id(self, id_usuario):
+        result = self.__mysqlDB.executeSelectParams(query_find_by_id, (id_usuario,))
         if len(result) < 1:
-            raise UsuarioNotFound(f'Não existe usuário com o id: {iDUsuario}')
+            raise UsuarioNotFound(f'Não existe usuário com o id: {id_usuario}')
 
-        return self.__convertToUsuarioDic(result[0])
+        return self.__convert_to_usuario_dic(result[0])
 
-    def findByLogin(self, login):
+    def find_by_login(self, login):
         result = self.__mysqlDB.executeSelectParams(query_find_by_login, (login,))
 
         if len(result) < 1:
             raise UsuarioNotFound(f'Não há usuários cadastrados com o login: {login}')
 
-        return self.__convertToUsuarioDic(result[0])
+        return self.__convert_to_usuario_dic(result[0])
 
-    def findAll(self):
+    def find_all(self):
         usuarios = []
         result = self.__mysqlDB.executeSelect(query_find_all)
 
@@ -35,16 +35,16 @@ class UsuarioRepository:
             raise UsuarioNotFound('Não há usuários cadastrados,')
 
         for usuario in result:
-            usuarios.append(self.__convertToUsuarioDic(usuario))
+            usuarios.append(self.__convert_to_usuario_dic(usuario))
 
         return usuarios
 
     def save(self, usuario):
         try:
-            self.findByLogin(usuario['login'])
+            self.find_by_login(usuario['login'])
         except UsuarioNotFound:
             iduser = self.__mysqlDB.executeInsert(query_insert, (usuario['nome'], usuario['login'], usuario['password'],
-                                                          usuario['admin']))
+                                                  usuario['admin']))
             usuario['id'] = iduser
 
             return usuario
@@ -52,15 +52,15 @@ class UsuarioRepository:
             raise UsuarioJaCadastrado(f'Login: {usuario["login"]} já cadastrado')
 
     def update(self, usuario):
-        self.findById(usuario['id'])
+        self.find_by_id(usuario['id'])
         self.__mysqlDB.executeUpdateDelete(query_update,
                                            (usuario['nome'], usuario['password'], usuario['admin'], usuario['id']))
 
     def delete(self, usuario):
-        self.findById(usuario['id'])
-        self.__mysqlDB.executeUpdateDelete(query_delete, (usuario['id']))
+        self.find_by_id(usuario['id'])
+        self.__mysqlDB.executeUpdateDelete(query_delete, (usuario['id'], ))
 
-    def __validaTabelaUsuario(self):
+    def __valida_tabela_usuario(self):
         if not self.__exists:
             tables = self.__mysqlDB.executeSelect('SHOW TABLES')
 
@@ -76,6 +76,6 @@ class UsuarioRepository:
 
                 self.__exists = True
 
-    def __convertToUsuarioDic(self, usuarioBD):
+    def __convert_to_usuario_dic(self, usuarioBD):
         return {'id': usuarioBD[0], 'nome': usuarioBD[1], 'login': usuarioBD[2], 'password': usuarioBD[3],
                 'admin': usuarioBD[4]}

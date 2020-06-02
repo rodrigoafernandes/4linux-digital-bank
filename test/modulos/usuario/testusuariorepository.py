@@ -20,7 +20,7 @@ class TestUsuarioRepository(TestCase):
         when(self.__mysql_db).executeSelectParams(query_find_by_id, (id_usuario,)).thenReturn([(1, 'Usuario Teste',
                                                                                                 'rodrigo', 'senha123',
                                                                                                 1)])
-        usuario = self.__usuario_repository.findById(id_usuario)
+        usuario = self.__usuario_repository.find_by_id(id_usuario)
 
         self.assertEqual(id_usuario, usuario['id'])
 
@@ -32,7 +32,7 @@ class TestUsuarioRepository(TestCase):
         when(self.__mysql_db).executeSelectParams(query_find_by_id, (id_usuario,)).thenReturn([])
 
         with self.assertRaises(UsuarioNotFound):
-            self.__usuario_repository.findById(id_usuario)
+            self.__usuario_repository.find_by_id(id_usuario)
 
         unstub()
 
@@ -44,7 +44,7 @@ class TestUsuarioRepository(TestCase):
         when(self.__mysql_db).executeSelectParams(query_find_by_login, (login, )).thenReturn([(1, 'Usuario Teste',
                                                                                                'rodrigo', 'senha123',
                                                                                                1)])
-        usuario = self.__usuario_repository.findByLogin(login)
+        usuario = self.__usuario_repository.find_by_login(login)
         self.assertEqual(expected_id_usuario, usuario['id'])
 
         unstub()
@@ -56,7 +56,7 @@ class TestUsuarioRepository(TestCase):
         when(self.__mysql_db).executeSelectParams(query_find_by_login, (login, )).thenReturn([])
 
         with self.assertRaises(UsuarioNotFound):
-            self.__usuario_repository.findByLogin(login)
+            self.__usuario_repository.find_by_login(login)
 
         unstub()
 
@@ -64,7 +64,7 @@ class TestUsuarioRepository(TestCase):
         self.__setUpTableExists()
 
         when(self.__mysql_db).executeSelect(query_find_all).thenReturn([(1, 'Usuario Teste', 'rodrigo', 'senha123', 1)])
-        usuarios = self.__usuario_repository.findAll()
+        usuarios = self.__usuario_repository.find_all()
         self.assertEqual(1, len(usuarios))
 
         unstub()
@@ -75,7 +75,7 @@ class TestUsuarioRepository(TestCase):
         when(self.__mysql_db).executeSelect(query_find_all).thenReturn([])
 
         with self.assertRaises(UsuarioNotFound):
-            self.__usuario_repository.findAll()
+            self.__usuario_repository.find_all()
 
         unstub()
 
