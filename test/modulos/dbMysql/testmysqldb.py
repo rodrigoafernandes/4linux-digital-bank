@@ -16,14 +16,13 @@ class TestMysqlDB(TestCase):
         query = 'SELECT * FROM Teste t'
         expected_result = [{'id': 1, 'atr': 'Nome'}]
 
-        when(self.__cursor).execute(query).thenReturn(expected_result)
+        when(self.__cursor).execute(query).thenReturn(True)
+        when(self.__cursor).fetchall().thenReturn(expected_result)
 
         results = self.__mysqlDb.executeSelect(query)
 
         self.assertEqual(len(expected_result), len(results))
         self.assertEqual(expected_result[0]['id'], 1)
-
-        # self.__tearDown()
 
     def test_givenSelectQueryWithParamsSuccessfullyExecuted_whenExecuteSelectWithParams_thenShouldReturnsListOfDic(self):
         search_id = 1
@@ -31,7 +30,8 @@ class TestMysqlDB(TestCase):
         params = (search_id,)
         expected_result = [{'id': 1, 'atr': 'Nome'}]
 
-        when(self.__cursor).execute(query, params).thenReturn(expected_result)
+        when(self.__cursor).execute(query, params).thenReturn(True)
+        when(self.__cursor).fetchall().thenReturn(expected_result)
 
         results = self.__mysqlDb.executeSelectParams(query, params)
 

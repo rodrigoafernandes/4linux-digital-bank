@@ -51,3 +51,6 @@ como enquadrar como um problema de orientação à objetos <br/>
 
 ## Conexão com o Banco de Dados MariaDB
 <code>docker container run -d --name mariadb-4LDB --restart always -p 3306:3306 -e MYSQL_ROOT_PASSWORD=admin123 -e MYSQL_DATABASE=4LDBKDEV01 -e MYSQL_USER=USR_4LDBK -e MYSQL_PASSWORD=USR_4LDBK mariadb</code>
+
+## Execução de testes unitários e coverage
+<code>python -m coverage run --source=modulos test/test.py<br/>python -m coverage json --pretty-print<br/>COVERAGE=$(cat coverage.json | jq -r '.totals.percent_covered')</code>

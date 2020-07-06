@@ -121,11 +121,11 @@ class TestUsuarioRepository(TestCase):
         usuario = {'id': 1, 'nome': "Teste123", 'login': 'test', 'password': '132', 'admin': 0}
         when(self.__mysql_db).executeSelectParams(query_find_by_id, (usuario['id'],)).thenReturn([(1, 'Teste', 'test',
                                                                                                    '321', 0), ])
-        when(self.__mysql_db).executeUpdateDelete(query_delete, (usuario['id'])).thenReturn(1)
+        when(self.__mysql_db).executeUpdateDelete(query_delete, (usuario['id'],)).thenReturn(1)
 
         self.__usuario_repository.delete(usuario)
 
-        verify(self.__mysql_db, times=1).executeUpdateDelete(query_delete, (usuario['id']))
+        verify(self.__mysql_db, times=1).executeUpdateDelete(query_delete, (usuario['id'],))
 
         unstub()
 
